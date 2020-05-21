@@ -3,7 +3,7 @@ const client = new Discord.Client();
 const fs = require("fs");
 
 const {token} = require("./token.json");
-const {cacheDir} = require("./config.json");
+const {cacheDir, blacklist} = require("./config.json");
 
 var ngrams = {};
 var beginnings = [];
@@ -13,14 +13,22 @@ var beginningPath = cacheDir + "beginnings.json";
 
 function addToChain(string) {
 	var words = string.split(" ");
-	
+	var first = true;
+
 	for (var i = 0; i < words.length; i++) {
 		var gram = words[i];
-		
-		if (i==0) beginnings.push(gram);
+
+		if (blacklist.includes(gram)) continue;
+			
+		if (first) {
+			beginnings.push(gram);
+			first = false;
+		}
+
 		if (!ngrams[gram]) ngrams[gram] = [];
 
-		ngrams[gram].push(words[i+1]);
+		var nextWord = words[i+1];
+		if (!blacklist.includes(nextWord)) ngrams[gram].push(words[i+1]);
 	}
 }
 
