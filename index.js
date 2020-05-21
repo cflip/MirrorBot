@@ -1,10 +1,15 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
+const fs = require("fs");
 
 const {token} = require("./token.json");
+const {cacheDir} = require("./config.json");
 
 var ngrams = {};
 var beginnings = [];
+
+var chainPath = cacheDir + "chain.json";
+var beginningPath = cacheDir + "beginnings.json";
 
 function addToChain(string) {
 	var words = string.split(" ");
@@ -35,10 +40,42 @@ function getMessage(length) {
 	return result;
 }
 
+function save() {
+	if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir);
+	
+	fs.writeFileSync(chainPath, JSON.stringify(ngrams));
+	fs.writeFileSync(beginningPath, JSON.stringify(beginnings));
+}
+
+function load() {
+	var chainData;
+	var beginningData;
+	
+	try {
+		chainData = JSON.parse(fs.readFileSync(chainPath));
+		beginningData = JSON.parse(fs.readFileSync(beginningPath));
+	} catch (err) {
+		chainData = {};
+		beginningData = [];
+		return;
+	}
+
+	ngrams = chainData;
+	beginnings = beginningData;
+}
+
+client.on("ready", () => {
+	load(chainPath);
+});
+
 client.on("message", message => {
 	if (message.member.user !== client.user) {
 		addToChain(message.content);
-		if (message.mentions.has(client.user)) message.channel.send(getMessage(100));
+		save();
+
+		if (message.mentions.has(client.user)) {
+			message.channel.send(getMessage(100));
+		}
 	}
 });
 
