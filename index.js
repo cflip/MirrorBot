@@ -31,6 +31,16 @@ function addToChain(string) {
 		if (!blacklist.includes(nextWord)) ngrams[gram].push(words[i+1]);
 	}
 }
+
+function removeFromChain(string) {
+	var words = string.split(" ");
+
+	words.forEach(word => {
+		if (ngrams[word]) delete ngrams[word];
+		if (beginnings.includes(word)) beginnings.splice(beginnings.indexOf(word), 1);
+	});
+}
+
 function getMessage(length) {
 	var currentGram = beginnings[Math.floor(Math.random()*beginnings.length)];
 	var result = currentGram;
@@ -87,13 +97,7 @@ client.on("message", message => {
 });
 
 client.on("messageDelete", message => {
-	var words = string.split(" ");
-
-	words.forEach(word => {
-		if (ngrams[word]) delete ngrams[word];
-		if (beginnings.includes(word)) delete beginnings[beginnings.indexOf(word)];
-	});
-
+	removeFromChain(message.content);
 	save();
 });
 
