@@ -3,7 +3,6 @@ package com.cflip.mirrorbot;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
-import discord4j.core.object.entity.Message;
 
 public class MirrorBot {
 	public static void main(String[] args) {
@@ -14,12 +13,15 @@ public class MirrorBot {
 
 		GatewayDiscordClient client = DiscordClientBuilder.create(token).build().login().block();
 
+		Chain chain = new Chain();
+
 		client.getEventDispatcher().on(MessageCreateEvent.class)
 				.map(MessageCreateEvent::getMessage)
 				.filter(message -> !message.getAuthor().map(user -> user.equals(client.getSelf().block())).orElse(false))
-				.flatMap(Message::getChannel)
-				.flatMap(channel -> channel.createMessage("replying!"))
-				.subscribe();
+				.subscribe(message -> {
+					chain.addWords(message.getContent());
+					message.getChannel().block().createMessage(chain.createMessage(150)).block();
+				});
 
 		client.onDisconnect().block();
 	}
