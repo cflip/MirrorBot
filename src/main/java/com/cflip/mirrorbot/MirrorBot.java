@@ -20,7 +20,8 @@ public class MirrorBot {
 				.filter(message -> !message.getAuthor().map(user -> user.equals(client.getSelf().block())).orElse(false))
 				.subscribe(message -> {
 					chain.addWords(message.getContent());
-					message.getChannel().block().createMessage(chain.createMessage(150)).block();
+					if (Math.random() < 0.1)
+						message.getChannel().block().createMessage(chain.createMessage(150)).block();
 				});
 
 		client.onDisconnect().block();
