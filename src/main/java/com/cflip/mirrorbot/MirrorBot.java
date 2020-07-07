@@ -6,6 +6,9 @@ import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.entity.channel.MessageChannel;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MirrorBot {
 	public static void main(String[] args) {
 		String token = System.getenv().get("TOKEN");
@@ -13,17 +16,23 @@ public class MirrorBot {
 
 		GatewayDiscordClient client = DiscordClientBuilder.create(token).build().login().block();
 	 	User self = client.getSelf().block();
-		Chain chain = new Chain();
+		Map<Long, Chain> chainMap = new HashMap();
 
 		client.getEventDispatcher().on(MessageCreateEvent.class)
 			.map(MessageCreateEvent::getMessage)
 			.filter(message -> !message.getAuthor().map(user -> user.equals(self)).orElse(false))
 			.subscribe(message -> {
-				chain.add(message.getContent().split(" "));
+				MessageChannel channel = message.getChannel().block();
+				long channelId = channel.getId().asLong();
+
+				if (!chainMap.containsKey(channelId)) {
+					chainMap.put(channelId, new Chain());
+				}
+
+				chainMap.get(channelId).add(message.getContent().split(" "));
 
 				if (Math.random() < 0.15 || message.getUserMentionIds().contains(self.getId())) {
-					MessageChannel channel = message.getChannel().block();
-					String msg = chain.createMessage(150);
+					String msg = chainMap.get(channelId).createMessage(150);
 					if (msg != null) channel.createMessage(msg).block();
 				}
 			});
