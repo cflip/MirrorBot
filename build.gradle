@@ -1,9 +1,14 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group 'com.cflip'
 version '1.0-SNAPSHOT'
+
+application {
+    mainClassName = "com.cflip.mirrorbot.MirrorBot"
+}
 
 repositories {
     mavenCentral()
