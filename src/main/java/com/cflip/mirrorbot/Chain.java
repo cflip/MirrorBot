@@ -9,15 +9,12 @@ public class Chain {
 	private final Map<String, ArrayList<String>> chain = new HashMap<>();
 	private final ArrayList<String> beginnings = new ArrayList<>();
 
-	public void addWords(String message) {
-		String[] words = message.split(" ");
+	public void add(String[] words ) {
 		boolean first = true;
 
 		for (int i = 0; i < words.length; i++) {
 			String word = words[i];
 
-			// In the future, the first word to be added might
-			// not always be the first element in the words array
 			if (first) {
 				beginnings.add(word);
 				first = false;
@@ -31,9 +28,7 @@ public class Chain {
 		}
 	}
 
-	public void removeWords(String message) {
-		String[] words = message.split(" ");
-
+	public void remove(String[] words) {
 		for (String word : words) {
 			chain.remove(word);
 			beginnings.remove(word);
