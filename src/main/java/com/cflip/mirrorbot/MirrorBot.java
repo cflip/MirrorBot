@@ -32,7 +32,7 @@ public class MirrorBot {
 				chainMap.get(channelId).add(message.getContent().split(" "));
 
 				if (Math.random() < 0.15 || message.getUserMentionIds().contains(self.getId())) {
-					String msg = chainMap.get(channelId).createMessage(150);
+					String msg = chainMap.get(channelId).createMessage();
 					if (msg != null) channel.createMessage(msg).block();
 				}
 			});

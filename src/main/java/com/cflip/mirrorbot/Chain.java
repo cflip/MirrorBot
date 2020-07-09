@@ -7,16 +7,26 @@ import java.util.Random;
 
 public class Chain {
 	private final Map<String, ArrayList<String>> chain = new HashMap<>();
-	private final ArrayList<String> beginnings = new ArrayList<>();
+	private final ArrayList<Beginning> beginnings = new ArrayList<>();
 
-	public void add(String[] words ) {
+	private static class Beginning {
+		public Beginning(String text, int msgLength) {
+			this.text = text;
+			this.msgLength = msgLength;
+		}
+
+		public String text;
+		public int msgLength;
+	}
+
+	public void add(String[] words) {
 		boolean first = true;
 
 		for (int i = 0; i < words.length; i++) {
 			String word = words[i];
 
 			if (first) {
-				beginnings.add(word);
+				beginnings.add(new Beginning(word, words.length));
 				first = false;
 			}
 
@@ -35,13 +45,15 @@ public class Chain {
 		}
 	}
 
-	public String createMessage(int maxWords) {
+	public String createMessage() {
 		Random random = new Random();
 
-		String current = beginnings.get(random.nextInt(beginnings.size()));
+		Beginning beginning = beginnings.get(random.nextInt(beginnings.size()));
+		String current = beginning.text;
+		int wordCount = beginning.msgLength;
 		StringBuilder result = new StringBuilder(current);
 
-		for (int i = 0; i < maxWords; i++) {
+		for (int i = 0; i < wordCount; i++) {
 			ArrayList<String> possibilities = chain.get(current);
 			if (possibilities.isEmpty()) continue;
 
