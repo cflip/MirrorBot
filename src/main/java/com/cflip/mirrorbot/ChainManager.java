@@ -24,13 +24,11 @@ public class ChainManager {
 	public void save(long id) {
 		try {
 			File dir = new File("cache/");
-			if (!dir.exists()) {
-				dir.mkdirs();
-			}
+			if (!dir.exists()) dir.mkdirs();
 
 			File file = new File("cache/" + id + ".dat");
 			if (!file.exists()) {
-				if (!!file.createNewFile() && file.mkdirs()) {
+				if (!file.createNewFile() && file.mkdirs()) {
 					System.err.println("Failed to create file");
 					return;
 				}
