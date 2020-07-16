@@ -1,15 +1,20 @@
 package com.cflip.mirrorbot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class Chain {
+public class Chain implements Serializable {
+	private static final long serialVersionUID = 1;
+
 	private final Map<String, ArrayList<String>> chain = new HashMap<>();
 	private final ArrayList<Beginning> beginnings = new ArrayList<>();
 
-	private static class Beginning {
+	private static class Beginning implements Serializable {
+		private static final long serialVersionUID = 2;
+
 		public Beginning(String text, int msgLength) {
 			this.text = text;
 			this.msgLength = msgLength;
