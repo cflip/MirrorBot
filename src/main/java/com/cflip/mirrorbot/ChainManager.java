@@ -23,19 +23,7 @@ public class ChainManager {
 
 	public void save(long id) {
 		try {
-			File dir = new File("cache/");
-			if (!dir.exists()) dir.mkdirs();
-
-			File file = new File("cache/" + id + ".dat");
-			if (!file.exists()) {
-				if (!file.createNewFile() && file.mkdirs()) {
-					System.err.println("Failed to create file");
-					return;
-				}
-			}
-
-			ObjectOutputStream outStream = new ObjectOutputStream(new FileOutputStream(file));
-			outStream.writeObject(chainMap.get(id));
+			ChainFileIO.save(id, chainMap.get(id));
 		} catch (IOException e) {
 			System.err.println("Failed to save chain with id " + id);
 			e.printStackTrace();
@@ -45,15 +33,14 @@ public class ChainManager {
 	public void loadAll() {
 		File dir = new File("cache/");
 		if (dir.exists()) {
-			for (File file : dir.listFiles()) {
-				long id = Long.parseLong(file.getName().replaceFirst("[.][^.]+$", ""));
+			File[] files = dir.listFiles();
+			if (files == null) return;
 
+			for (File file : files) {
 				try {
-					ObjectInputStream inStream = new ObjectInputStream(new FileInputStream(file));
-					Chain chain = (Chain) inStream.readObject();
-					chainMap.put(id, chain);
+					chainMap.put(ChainFileIO.getIdFromFileName(file), ChainFileIO.load(file));
 				} catch (IOException | ClassNotFoundException e) {
-					System.err.println("Failed to read file " + id + " from cache");
+					System.err.println("Failed to read chain from file " + file.getAbsolutePath());
 					e.printStackTrace();
 				}
 			}
