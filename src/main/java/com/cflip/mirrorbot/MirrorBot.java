@@ -3,8 +3,11 @@ package com.cflip.mirrorbot;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.event.domain.message.MessageDeleteEvent;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.entity.channel.MessageChannel;
+
+import java.util.Optional;
 
 public class MirrorBot {
 	public static void main(String[] args) {
@@ -29,6 +32,13 @@ public class MirrorBot {
 					channel.createMessage(chains.createMessage(channelId)).block();
 					chains.save(channelId);
 				}
+			});
+
+		client.getEventDispatcher().on(MessageDeleteEvent.class)
+			.map(MessageDeleteEvent::getMessage)
+			.map(Optional::get)
+			.subscribe(message -> {
+				chains.remove(message.getChannelId().asLong(), message.getContent());
 			});
 
 		client.onDisconnect().block();
