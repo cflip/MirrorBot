@@ -7,13 +7,14 @@ import discord4j.core.event.domain.message.MessageDeleteEvent;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.entity.channel.MessageChannel;
 
+import java.io.FileNotFoundException;
 import java.util.Optional;
 
 public class MirrorBot {
 	private final User self;
 	private final ChainManager chainManager;
 
-	public MirrorBot(String token) {
+	public MirrorBot(String token, MirrorBotConfig config) {
 		GatewayDiscordClient client = DiscordClientBuilder.create(token).build().login().block();
 
 		chainManager = new ChainManager();
@@ -28,9 +29,9 @@ public class MirrorBot {
 				MessageChannel channel = message.getChannel().block();
 				long channelId = channel.getId().asLong();
 
-				chainManager.add(channelId, message.getContent());
+				chainManager.add(channelId, message.getContent(), config.blacklist);
 
-				if (Math.random() < 0.15 || message.getUserMentionIds().contains(self.getId())) {
+				if (Math.random() < config.messageChance || message.getUserMentionIds().contains(self.getId())) {
 					channel.createMessage(chainManager.createMessage(channelId)).block();
 					chainManager.save(channelId);
 				}
@@ -53,6 +54,12 @@ public class MirrorBot {
 			System.exit(-1);
 		}
 
-		new MirrorBot(token);
+		MirrorBotConfig config = null;
+		try {
+			config = new MirrorBotConfig("/config.json");
+		} catch (FileNotFoundException e) {
+			config = new MirrorBotConfig();
+		}
+		new MirrorBot(token, config);
 	}
 }

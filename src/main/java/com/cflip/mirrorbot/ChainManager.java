@@ -1,18 +1,26 @@
 package com.cflip.mirrorbot;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ChainManager {
 	private final Map<Long, Chain> chainMap = new HashMap<>();
 
-	public void add(long id, String words) {
+	public void add(long id, String words, List<String> blacklist) {
 		if (!chainMap.containsKey(id)) {
 			chainMap.put(id, new Chain());
 		}
 
-		chainMap.get(id).add(words.split(" "));
+		List<String> wordList = Arrays.asList(words.split(" "));
+		for (String regex : blacklist) {
+			wordList.removeIf(s -> s.matches(regex));
+		}
+
+		chainMap.get(id).add((String[]) wordList.toArray());
 	}
 
 	public void remove(long id, String words) {

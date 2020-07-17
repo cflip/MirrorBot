@@ -1,0 +1,6 @@
+{
+	"messageChance": 0.8,
+	"blacklist": [
+		"<@!\\d+>"
+	]
+}
