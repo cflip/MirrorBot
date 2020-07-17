@@ -15,12 +15,12 @@ public class ChainManager {
 			chainMap.put(id, new Chain());
 		}
 
-		List<String> wordList = Arrays.asList(words.split(" "));
+		String[] wordList = words.split(" ");
 		for (String regex : blacklist) {
-			wordList.removeIf(s -> s.matches(regex));
+			wordList = Arrays.stream(wordList).filter(s -> s.matches(regex)).toArray(String[]::new);
 		}
 
-		chainMap.get(id).add((String[]) wordList.toArray());
+		chainMap.get(id).add(wordList);
 	}
 
 	public void remove(long id, String words) {
