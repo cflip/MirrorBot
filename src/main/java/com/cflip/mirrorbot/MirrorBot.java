@@ -1,5 +1,7 @@
 package com.cflip.mirrorbot;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
@@ -7,14 +9,23 @@ import discord4j.core.event.domain.message.MessageDeleteEvent;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.entity.channel.MessageChannel;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.List;
 import java.util.Optional;
 
 public class MirrorBot {
 	private final User self;
 	private final ChainManager chainManager;
 
-	public MirrorBot(MirrorBotConfig config) {
+	public static class Config {
+		public String token;
+		public float messageChance;
+		public List<String> blacklist;
+	}
+
+	public MirrorBot(Config config) {
 		GatewayDiscordClient client = DiscordClientBuilder.create(config.token).build().login().block();
 
 		chainManager = new ChainManager();
@@ -46,13 +57,14 @@ public class MirrorBot {
 	}
 
 	public static void main(String[] args) {
-		MirrorBotConfig config;
 		try {
-			config = new MirrorBotConfig("/config.json");
+			JsonReader reader = new JsonReader(new FileReader(new File("config.json")));
+			Gson gson = new Gson();
+			Config config = gson.fromJson(reader, Config.class);
+			new MirrorBot(config);
 		} catch (FileNotFoundException e) {
 			System.err.println("Failed to find config.json file.");
-			config = new MirrorBotConfig();
+			System.exit(-1);
 		}
-		new MirrorBot(config);
 	}
 }
