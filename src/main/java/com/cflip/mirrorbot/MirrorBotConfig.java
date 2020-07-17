@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MirrorBotConfig {
+	public String token;
 	public float messageChance;
 	public List<String> blacklist;
 

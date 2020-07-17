@@ -1,5 +1,7 @@
 .gradle
 .idea
 /build
-/run
 /cache
+
+# Use example-token.json to make your own config
+config.json

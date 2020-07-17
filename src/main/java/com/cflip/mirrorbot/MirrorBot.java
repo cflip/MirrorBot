@@ -14,8 +14,8 @@ public class MirrorBot {
 	private final User self;
 	private final ChainManager chainManager;
 
-	public MirrorBot(String token, MirrorBotConfig config) {
-		GatewayDiscordClient client = DiscordClientBuilder.create(token).build().login().block();
+	public MirrorBot(MirrorBotConfig config) {
+		GatewayDiscordClient client = DiscordClientBuilder.create(config.token).build().login().block();
 
 		chainManager = new ChainManager();
 		chainManager.loadAll();
@@ -46,20 +46,13 @@ public class MirrorBot {
 	}
 
 	public static void main(String[] args) {
-		String token = System.getenv().get("TOKEN");
-		if (token == null) {
-			if (args.length > 0) token = args[0];
-		} else {
-			System.err.println("Failed to get the bot user token!\nPlease set the environment variable 'TOKEN' or pass the token in as the first argument.");
-			System.exit(-1);
-		}
-
 		MirrorBotConfig config;
 		try {
 			config = new MirrorBotConfig("/config.json");
 		} catch (FileNotFoundException e) {
+			System.err.println("Failed to find config.json file.");
 			config = new MirrorBotConfig();
 		}
-		new MirrorBot(token, config);
+		new MirrorBot(config);
 	}
 }
