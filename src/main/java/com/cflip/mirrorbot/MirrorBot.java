@@ -47,14 +47,14 @@ public class MirrorBot {
 
 	public static void main(String[] args) {
 		String token = System.getenv().get("TOKEN");
-		if (token == null && args.length > 0) {
-			token = args[0];
+		if (token == null) {
+			if (args.length > 0) token = args[0];
 		} else {
 			System.err.println("Failed to get the bot user token!\nPlease set the environment variable 'TOKEN' or pass the token in as the first argument.");
 			System.exit(-1);
 		}
 
-		MirrorBotConfig config = null;
+		MirrorBotConfig config;
 		try {
 			config = new MirrorBotConfig("/config.json");
 		} catch (FileNotFoundException e) {
