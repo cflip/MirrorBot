@@ -43,7 +43,10 @@ public class MirrorBot {
 				chainManager.add(channelId, message.getContent(), config.blacklist);
 
 				if (Math.random() < config.messageChance || message.getUserMentionIds().contains(self.getId())) {
-					channel.createMessage(chainManager.createMessage(channelId)).block();
+					String createdMessage = chainManager.createMessage(channelId);
+					if (!createdMessage.equals("")) {
+						channel.createMessage(createdMessage).block();
+					}
 					chainManager.save(channelId);
 				}
 			});
