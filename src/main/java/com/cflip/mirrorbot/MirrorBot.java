@@ -12,6 +12,7 @@ import discord4j.core.object.entity.channel.MessageChannel;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,10 +65,13 @@ public class MirrorBot {
 			JsonReader reader = new JsonReader(new FileReader(new File("config.json")));
 			Gson gson = new Gson();
 			Config config = gson.fromJson(reader, Config.class);
+			reader.close();
 			new MirrorBot(config);
 		} catch (FileNotFoundException e) {
 			System.err.println("Failed to find config.json file.");
 			System.exit(-1);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

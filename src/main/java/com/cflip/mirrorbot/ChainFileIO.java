@@ -12,11 +12,14 @@ public class ChainFileIO {
 
 		ObjectOutputStream outStream = new ObjectOutputStream(new FileOutputStream(file));
 		outStream.writeObject(chain);
+		outStream.close();
 	}
 
 	public static Chain load(File file) throws IOException, ClassNotFoundException {
 		ObjectInputStream inStream = new ObjectInputStream(new FileInputStream(file));
-		return (Chain) inStream.readObject();
+		Chain result = (Chain) inStream.readObject();
+		inStream.close();
+		return result;
 	}
 
 	public static long getIdFromFileName(File file) {
