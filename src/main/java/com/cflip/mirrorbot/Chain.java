@@ -54,6 +54,11 @@ public class Chain implements Serializable {
 	public String createMessage() {
 		Random random = new Random();
 
+		if (beginnings.size() == 0 || chain.size() == 0) {
+			System.out.println("Did not create message since there was not enough data.");
+			return "";
+		}
+
 		Beginning beginning = beginnings.get(random.nextInt(beginnings.size()));
 		String current = beginning.text;
 		int wordCount = beginning.msgLength;
