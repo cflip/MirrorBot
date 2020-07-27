@@ -46,8 +46,7 @@ public class Chain implements Serializable {
 	public void remove(String[] words) {
 		for (String word : words) {
 			chain.remove(word);
-			// TODO: beginnings doesn't contain String values anymore
-			beginnings.remove(word);
+			beginnings.removeIf(beginning -> beginning.text.equals(word));
 		}
 	}
 
