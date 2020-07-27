@@ -1,5 +1,7 @@
 package com.cflip.mirrorbot;
 
+import com.cflip.mirrorbot.command.CommandDispatcher;
+import com.cflip.mirrorbot.command.EchoCommand;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import discord4j.core.DiscordClientBuilder;
@@ -22,6 +24,7 @@ public class MirrorBot {
 
 	public static class Config {
 		public String token;
+		public String prefix;
 		public float messageChance;
 		public List<String> blacklist;
 	}
@@ -41,21 +44,27 @@ public class MirrorBot {
 
 		self = client.getSelf().block();
 
+		CommandDispatcher commandDispatcher = new CommandDispatcher();
+		commandDispatcher.addCommand("echo", new EchoCommand());
+
 		client.getEventDispatcher().on(MessageCreateEvent.class)
 			.map(MessageCreateEvent::getMessage)
 			.filter(message -> !message.getAuthor().map(user -> user.equals(self)).orElse(false))
 			.subscribe(message -> {
 				MessageChannel channel = message.getChannel().block();
-				long channelId = channel.getId().asLong();
+				if (message.getContent().startsWith(config.prefix)) {
+					commandDispatcher.run(message, config);
+				} else {
+					long channelId = channel.getId().asLong();
+					chainManager.add(channelId, message.getContent(), config.blacklist);
 
-				chainManager.add(channelId, message.getContent(), config.blacklist);
-
-				if (Math.random() < config.messageChance || message.getUserMentionIds().contains(self.getId())) {
-					String createdMessage = chainManager.createMessage(channelId);
-					if (!createdMessage.equals("")) {
-						channel.createMessage(createdMessage).block();
+					if (Math.random() < config.messageChance || message.getUserMentionIds().contains(self.getId())) {
+						String createdMessage = chainManager.createMessage(channelId);
+						if (!createdMessage.equals("")) {
+							channel.createMessage(createdMessage).block();
+						}
+						chainManager.save(channelId);
 					}
-					chainManager.save(channelId);
 				}
 			});
 
