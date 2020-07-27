@@ -3,5 +3,5 @@
 /build
 /cache
 
-# Use example-token.json to make your own config
+# Use example-config.json to make your own config
 config.json
