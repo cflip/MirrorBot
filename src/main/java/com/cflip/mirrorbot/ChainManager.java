@@ -17,7 +17,7 @@ public class ChainManager {
 
 		String[] wordList = words.split(" ");
 		for (String regex : blacklist) {
-			wordList = Arrays.stream(wordList).filter(s -> s.matches(regex)).toArray(String[]::new);
+			wordList = Arrays.stream(wordList).filter(s -> !s.matches(regex)).toArray(String[]::new);
 		}
 
 		chainMap.get(id).add(wordList);
