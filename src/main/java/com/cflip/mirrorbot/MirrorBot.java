@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class MirrorBot {
-	private final User self;
-	private final ChainManager chainManager;
+	private User self;
+	private ChainManager chainManager;
 
 	public static class Config {
 		public String token;
@@ -27,7 +27,14 @@ public class MirrorBot {
 	}
 
 	public MirrorBot(Config config) {
-		GatewayDiscordClient client = DiscordClientBuilder.create(config.token).build().login().block();
+		GatewayDiscordClient client;
+		try {
+			client = DiscordClientBuilder.create(config.token).build().login().block();
+		} catch (Exception e) {
+			System.err.println("Could not start bot! Your token might be incorrect.");
+			e.printStackTrace();
+			return;
+		}
 
 		chainManager = new ChainManager();
 		chainManager.loadAll();
