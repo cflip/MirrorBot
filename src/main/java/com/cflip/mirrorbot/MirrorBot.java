@@ -1,7 +1,7 @@
 package com.cflip.mirrorbot;
 
 import com.cflip.mirrorbot.command.CommandDispatcher;
-import com.cflip.mirrorbot.command.EchoCommand;
+import com.cflip.mirrorbot.command.HelpCommand;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import discord4j.core.DiscordClientBuilder;
@@ -45,7 +45,7 @@ public class MirrorBot {
 		self = client.getSelf().block();
 
 		CommandDispatcher commandDispatcher = new CommandDispatcher();
-		commandDispatcher.addCommand("echo", new EchoCommand());
+		commandDispatcher.addCommand("help", new HelpCommand());
 
 		client.getEventDispatcher().on(MessageCreateEvent.class)
 			.map(MessageCreateEvent::getMessage)
