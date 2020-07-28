@@ -54,7 +54,7 @@ public class MirrorBot {
 		commandDispatcher.addCommand("help", new HelpCommand());
 
 		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-		scheduler.scheduleAtFixedRate(() -> client.updatePresence(getStatus(chainManager)).block(), 1, config.statusUpdateTime, TimeUnit.SECONDS);
+		scheduler.scheduleAtFixedRate(() -> client.updatePresence(getStatus()).block(), 1, config.statusUpdateTime, TimeUnit.SECONDS);
 
 		client.getEventDispatcher().on(MessageCreateEvent.class)
 			.map(MessageCreateEvent::getMessage)
@@ -85,7 +85,7 @@ public class MirrorBot {
 		client.onDisconnect().block();
 	}
 
-	public static StatusUpdate getStatus(ChainManager chainManager) {
+	public StatusUpdate getStatus() {
 		return StatusUpdate.builder().status("MirrorBot status").afk(false).game(Activity.playing(chainManager.randomMessage())).build();
 	}
 
