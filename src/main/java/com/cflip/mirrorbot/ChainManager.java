@@ -2,10 +2,7 @@ package com.cflip.mirrorbot;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ChainManager {
 	private final Map<Long, Chain> chainMap = new HashMap<>();
@@ -50,6 +47,8 @@ public class ChainManager {
 				} catch (IOException | ClassNotFoundException e) {
 					System.err.println("Failed to read chain from file " + file.getAbsolutePath());
 					e.printStackTrace();
+				} catch (NumberFormatException e) {
+					System.err.println("File name did not contain a number: " + file.getAbsolutePath());
 				}
 			}
 		}
@@ -57,5 +56,15 @@ public class ChainManager {
 
 	public String createMessage(long id) {
 		return chainMap.containsKey(id) ? chainMap.get(id).createMessage() : "";
+	}
+
+	public String randomMessage() {
+		if (chainMap.size() > 0) {
+			Random random = new Random();
+			List<Chain> chains = new ArrayList<>(chainMap.values());
+			return chains.get(random.nextInt(chains.size())).createMessage();
+		} else {
+			return "";
+		}
 	}
 }

@@ -22,7 +22,7 @@ public class ChainFileIO {
 		return result;
 	}
 
-	public static long getIdFromFileName(File file) {
+	public static long getIdFromFileName(File file) throws NumberFormatException {
 		return Long.parseLong(file.getName().replaceFirst("[.][^.]+$", ""));
 	}
 }
