@@ -10,6 +10,18 @@ application {
     mainClassName = "com.cflip.mirrorbot.MirrorBot"
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': "com.cflip.mirrorbot.MirrorBot"
+    }
+
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
+
 repositories {
     mavenCentral()
 }
