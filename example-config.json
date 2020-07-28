@@ -1,6 +1,7 @@
 {
 	"token": "Your token goes here",
 	"prefix": "mb!",
+	"statusUpdateTime": 60,
 	"messageChance": 0.15,
 	"blacklist": [
 		"Add regular expressions to be filtered out from word input"

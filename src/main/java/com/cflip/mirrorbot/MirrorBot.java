@@ -10,6 +10,8 @@ import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.event.domain.message.MessageDeleteEvent;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.entity.channel.MessageChannel;
+import discord4j.core.object.presence.Activity;
+import discord4j.discordjson.json.gateway.StatusUpdate;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,6 +19,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class MirrorBot {
 	private User self;
@@ -25,6 +30,7 @@ public class MirrorBot {
 	public static class Config {
 		public String token;
 		public String prefix;
+		public int statusUpdateTime;
 		public float messageChance;
 		public List<String> blacklist;
 	}
@@ -46,6 +52,9 @@ public class MirrorBot {
 
 		CommandDispatcher commandDispatcher = new CommandDispatcher();
 		commandDispatcher.addCommand("help", new HelpCommand());
+
+		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+		scheduler.scheduleAtFixedRate(() -> client.updatePresence(getStatus(chainManager)).block(), 1, config.statusUpdateTime, TimeUnit.SECONDS);
 
 		client.getEventDispatcher().on(MessageCreateEvent.class)
 			.map(MessageCreateEvent::getMessage)
@@ -74,6 +83,10 @@ public class MirrorBot {
 			.subscribe(message -> chainManager.remove(message.getChannelId().asLong(), message.getContent()));
 
 		client.onDisconnect().block();
+	}
+
+	public static StatusUpdate getStatus(ChainManager chainManager) {
+		return StatusUpdate.builder().status("MirrorBot status").afk(false).game(Activity.playing(chainManager.randomMessage())).build();
 	}
 
 	public static void main(String[] args) {
