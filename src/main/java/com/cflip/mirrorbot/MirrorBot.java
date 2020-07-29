@@ -59,7 +59,7 @@ public class MirrorBot {
 		commandDispatcher.addCommand("view", new ViewCommand());
 
 		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-		scheduler.scheduleAtFixedRate(() -> client.updatePresence(getStatus()).block(), 1, config.statusUpdateTime, TimeUnit.MINUTES);
+		scheduler.scheduleAtFixedRate(() -> client.updatePresence(getStatus()).block(), 0, config.statusUpdateTime, TimeUnit.MINUTES);
 
 		client.getEventDispatcher().on(MessageCreateEvent.class)
 			.map(MessageCreateEvent::getMessage)
