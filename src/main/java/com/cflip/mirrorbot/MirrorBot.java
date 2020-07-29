@@ -2,6 +2,7 @@ package com.cflip.mirrorbot;
 
 import com.cflip.mirrorbot.command.CommandDispatcher;
 import com.cflip.mirrorbot.command.HelpCommand;
+import com.cflip.mirrorbot.command.ViewCommand;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import discord4j.core.DiscordClientBuilder;
@@ -52,6 +53,7 @@ public class MirrorBot {
 
 		CommandDispatcher commandDispatcher = new CommandDispatcher();
 		commandDispatcher.addCommand("help", new HelpCommand());
+		commandDispatcher.addCommand("view", new ViewCommand());
 
 		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 		scheduler.scheduleAtFixedRate(() -> client.updatePresence(getStatus()).block(), 1, config.statusUpdateTime, TimeUnit.SECONDS);
@@ -62,7 +64,7 @@ public class MirrorBot {
 			.subscribe(message -> {
 				MessageChannel channel = message.getChannel().block();
 				if (message.getContent().startsWith(config.prefix)) {
-					commandDispatcher.run(message, config);
+					commandDispatcher.run(message, config, chainManager);
 				} else {
 					long channelId = channel.getId().asLong();
 					chainManager.add(channelId, message.getContent(), config.blacklist);
