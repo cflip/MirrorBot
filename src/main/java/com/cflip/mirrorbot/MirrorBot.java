@@ -25,8 +25,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class MirrorBot {
-	private User self;
-	private ChainManager chainManager;
+	public User self;
+	public ChainManager chainManager;
+	public Config config;
 
 	public static class Config {
 		public String token;
@@ -37,6 +38,8 @@ public class MirrorBot {
 	}
 
 	public MirrorBot(Config config) {
+		this.config = config;
+
 		GatewayDiscordClient client;
 		try {
 			client = DiscordClientBuilder.create(config.token).build().login().block();
@@ -64,7 +67,7 @@ public class MirrorBot {
 			.subscribe(message -> {
 				MessageChannel channel = message.getChannel().block();
 				if (message.getContent().startsWith(config.prefix)) {
-					commandDispatcher.run(message, config, chainManager);
+					commandDispatcher.run(message, this);
 				} else {
 					long channelId = channel.getId().asLong();
 					chainManager.add(channelId, message.getContent(), config.blacklist);

@@ -1,6 +1,5 @@
 package com.cflip.mirrorbot.command;
 
-import com.cflip.mirrorbot.ChainManager;
 import com.cflip.mirrorbot.MirrorBot;
 import discord4j.core.object.entity.Message;
 
@@ -14,11 +13,11 @@ public class CommandDispatcher {
 		commandMap.putIfAbsent(name, command);
 	}
 
-	public void run(Message message, MirrorBot.Config config, ChainManager chainManager) {
+	public void run(Message message, MirrorBot bot) {
 		for (Map.Entry<String, Command> entry : commandMap.entrySet()) {
-			if (message.getContent().startsWith(config.prefix + entry.getKey())) {
+			if (message.getContent().startsWith(bot.config.prefix + entry.getKey())) {
 				try {
-					entry.getValue().run(message, config, chainManager);
+					entry.getValue().run(message, bot);
 				} catch (Exception e) {
 					System.err.println("Command error");
 					e.printStackTrace();
