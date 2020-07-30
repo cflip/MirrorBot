@@ -5,6 +5,13 @@ import java.io.*;
 public class ChainFileIO {
 	public static void save(long id, Chain chain) throws IOException {
 		File file = new File("cache/" + id + ".dat");
+		File dir = new File("cache/");
+
+		if (!dir.exists() && !dir.mkdirs()) {
+			System.err.println("Failed to create cache directory! " + file.getAbsolutePath());
+			return;
+		}
+
 		if (!file.exists() && !file.createNewFile()) {
 			System.err.println("Failed to create file at " + file.getAbsolutePath());
 			return;
