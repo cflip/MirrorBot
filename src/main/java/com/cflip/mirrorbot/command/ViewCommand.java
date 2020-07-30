@@ -16,7 +16,14 @@ public class ViewCommand implements Command {
 			if (matcher.find()) {
 				String channelName = matcher.group();
 				long channelId = Long.parseLong(channelName.replaceAll("\\D", ""));
-				channel.createMessage(channelName + ":\n" + bot.chainManager.createMessage(channelId)).block();
+
+				String channelMessage = bot.chainManager.createMessage(channelId);
+
+				if (channelMessage.equals("")) {
+					channel.createMessage(channelName + " came up with an empty message!").block();
+				} else {
+					channel.createMessage(channelName + ":\n" + channelMessage).block();
+				}
 			} else {
 				channel.createMessage("Please write a channel name with a # in your message").block();
 			}
