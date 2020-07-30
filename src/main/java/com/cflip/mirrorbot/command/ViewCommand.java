@@ -29,4 +29,9 @@ public class ViewCommand implements Command {
 			}
 		});
 	}
+
+	@Override
+	public String getDescription() {
+		return "Create a message based on what a different channel says";
+	}
 }

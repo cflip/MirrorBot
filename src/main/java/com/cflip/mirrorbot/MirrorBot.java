@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 public class MirrorBot {
 	public User self;
 	public ChainManager chainManager;
+	public CommandDispatcher commandDispatcher;
 	public Config config;
 
 	public static class Config {
@@ -54,7 +55,7 @@ public class MirrorBot {
 
 		self = client.getSelf().block();
 
-		CommandDispatcher commandDispatcher = new CommandDispatcher();
+		commandDispatcher = new CommandDispatcher();
 		commandDispatcher.addCommand("help", new HelpCommand());
 		commandDispatcher.addCommand("view", new ViewCommand());
 

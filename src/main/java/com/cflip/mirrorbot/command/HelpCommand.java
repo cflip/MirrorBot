@@ -16,12 +16,16 @@ public class HelpCommand implements Command {
 				"Mention MirrorBot in your message to get a reply that might sound like what members " +
 				"of your server would say in that channel.\n\nMirrorBot can also be configured to " +
 				"have a random chance of replying whenever someone sends a message.\n\n **Commands**\n" +
-				bot.config.prefix + "help: View this help page\n" + bot.config.prefix + "view: Create a " +
-				"message based on what a different channel says"
+				bot.commandDispatcher.getCommandListString(bot.config.prefix)
 			)
 			.setFooter("Enjoy!", null)
 			.setTimestamp(Instant.now()) // Looks cool to have the time there even though it's not really useful
 			.setColor(Color.BISMARK)
 		).block());
+	}
+
+	@Override
+	public String getDescription() {
+		return "View MirrorBot help/information screen";
 	}
 }

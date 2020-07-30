@@ -5,4 +5,5 @@ import discord4j.core.object.entity.Message;
 
 public interface Command {
 	void run(Message message, MirrorBot bot);
+	String getDescription();
 }
