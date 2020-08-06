@@ -59,8 +59,10 @@ public class MirrorBot {
 		commandDispatcher.addCommand("help", new HelpCommand());
 		commandDispatcher.addCommand("view", new ViewCommand());
 
-		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 		scheduler.scheduleAtFixedRate(() -> client.updatePresence(getStatus()).block(), 0, config.statusUpdateTime, TimeUnit.MINUTES);
+		// This will save all chains every 4 minutes, starting with a 2 minute delay.
+		scheduler.scheduleAtFixedRate(() -> chainManager.saveAll(), 2, 4, TimeUnit.MINUTES);
 
 		client.getEventDispatcher().on(MessageCreateEvent.class)
 			.map(MessageCreateEvent::getMessage)

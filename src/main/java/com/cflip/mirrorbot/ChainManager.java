@@ -35,6 +35,10 @@ public class ChainManager {
 		}
 	}
 
+	public void saveAll() {
+		for (long id : chainMap.keySet()) save(id);
+	}
+
 	public void loadAll() {
 		File dir = new File("cache/");
 		if (dir.exists()) {
