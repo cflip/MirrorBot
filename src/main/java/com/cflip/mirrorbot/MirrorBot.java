@@ -14,7 +14,6 @@ import discord4j.core.object.entity.channel.MessageChannel;
 import discord4j.core.object.presence.Activity;
 import discord4j.discordjson.json.gateway.StatusUpdate;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -100,7 +99,7 @@ public class MirrorBot {
 
 	public static void main(String[] args) {
 		try {
-			JsonReader reader = new JsonReader(new FileReader(new File("config.json")));
+			JsonReader reader = new JsonReader(new FileReader("config.json"));
 			Gson gson = new Gson();
 			Config config = gson.fromJson(reader, Config.class);
 			reader.close();
