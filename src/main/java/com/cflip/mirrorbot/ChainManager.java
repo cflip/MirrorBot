@@ -39,7 +39,7 @@ public class ChainManager {
 		for (long id : chainMap.keySet()) save(id);
 	}
 
-	public void loadAll() {
+	public void loadAll(List<String> blacklist) {
 		File dir = new File("cache/");
 		if (dir.exists()) {
 			File[] files = dir.listFiles();
@@ -47,7 +47,7 @@ public class ChainManager {
 
 			for (File file : files) {
 				try {
-					chainMap.put(ChainFileIO.getIdFromFileName(file), ChainFileIO.load(file));
+					chainMap.put(ChainFileIO.getIdFromFileName(file), ChainFileIO.load(file, blacklist));
 				} catch (IOException | ClassNotFoundException e) {
 					System.err.println("Failed to read chain from file " + file.getAbsolutePath());
 					e.printStackTrace();

@@ -1,6 +1,7 @@
 package com.cflip.mirrorbot;
 
 import java.io.*;
+import java.util.List;
 
 public class ChainFileIO {
 	public static void save(long id, Chain chain) throws IOException {
@@ -22,10 +23,13 @@ public class ChainFileIO {
 		outStream.close();
 	}
 
-	public static Chain load(File file) throws IOException, ClassNotFoundException {
+	public static Chain load(File file, List<String> blacklist) throws IOException, ClassNotFoundException {
 		ObjectInputStream inStream = new ObjectInputStream(new FileInputStream(file));
 		Chain result = (Chain) inStream.readObject();
 		inStream.close();
+
+		result.remove(blacklist.toArray(new String[0]));
+
 		return result;
 	}
 

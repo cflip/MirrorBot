@@ -44,6 +44,7 @@ public class MirrorBot {
 		GatewayDiscordClient client;
 		try {
 			client = DiscordClientBuilder.create(config.token).build().login().block();
+			if (client == null) throw new Exception();
 		} catch (Exception e) {
 			System.err.println("Could not start bot! Your token might be incorrect.");
 			e.printStackTrace();
@@ -51,7 +52,7 @@ public class MirrorBot {
 		}
 
 		chainManager = new ChainManager();
-		chainManager.loadAll();
+		chainManager.loadAll(config.blacklist);
 
 		self = client.getSelf().block();
 
