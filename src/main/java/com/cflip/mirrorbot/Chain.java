@@ -65,7 +65,7 @@ public class Chain implements Serializable {
 
 		for (int i = 0; i < wordCount; i++) {
 			ArrayList<String> possibilities = chain.get(current);
-			if (possibilities.isEmpty()) continue;
+			if (possibilities == null || possibilities.isEmpty()) continue;
 
 			String next = possibilities.get(random.nextInt(possibilities.size()));
 			if (next == null) continue;
